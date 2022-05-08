@@ -76,7 +76,7 @@ public abstract class AbstractNioMessageChannel extends AbstractNioChannel {
             try {
                 try {
                     do {
-                        int localRead = doReadMessages(readBuf);
+                        int localRead = doReadMessages(readBuf);    // readBuf用于存储客户端 SocketChannel
                         if (localRead == 0) {
                             break;
                         }
@@ -96,7 +96,7 @@ public abstract class AbstractNioMessageChannel extends AbstractNioChannel {
                     readPending = false;
                     pipeline.fireChannelRead(readBuf.get(i));
                 }
-                readBuf.clear();
+                readBuf.clear();    // readBuf里面的SocketChannel都注册到对应的workerGroup中的EventLoop后，清除数组
                 allocHandle.readComplete();
                 pipeline.fireChannelReadComplete();
 

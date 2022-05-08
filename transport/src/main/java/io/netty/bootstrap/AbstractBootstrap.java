@@ -307,7 +307,9 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
     final ChannelFuture initAndRegister() {
         Channel channel = null;
         try {
+            // 反射创建对应的 ServerSocketChannel
             channel = channelFactory.newChannel();
+            // 初始化 ServerSocketChannel
             init(channel);
         } catch (Throwable t) {
             if (channel != null) {
@@ -320,6 +322,7 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
             return new DefaultChannelPromise(new FailedChannel(), GlobalEventExecutor.INSTANCE).setFailure(t);
         }
 
+        // channel 调用 register 方法注册到对应的 Selector 中
         ChannelFuture regFuture = config().group().register(channel);
         if (regFuture.cause() != null) {
             if (channel.isRegistered()) {

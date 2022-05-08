@@ -438,6 +438,8 @@ public final class NioEventLoop extends SingleThreadEventLoop {
             try {
                 int strategy;
                 try {
+                    // 如果 taskQueue 中有任务，则调用 selector.selectNow()，此方法立即返回
+                    // 如果 没有事件，则返回0
                     strategy = selectStrategy.calculateStrategy(selectNowSupplier, hasTasks());
                     switch (strategy) {
                     case SelectStrategy.CONTINUE:
@@ -490,6 +492,7 @@ public final class NioEventLoop extends SingleThreadEventLoop {
                 } else if (strategy > 0) {
                     final long ioStartTime = System.nanoTime();
                     try {
+                        // 如果有新连接
                         processSelectedKeys();
                     } finally {
                         // Ensure we always run tasks.
@@ -649,6 +652,7 @@ public final class NioEventLoop extends SingleThreadEventLoop {
             // See https://github.com/netty/netty/issues/2363
             selectedKeys.keys[i] = null;
 
+            // 实际上返回的是当时register方法的第三个参数，一般都是this，代表channel对象本身
             final Object a = k.attachment();
 
             if (a instanceof AbstractNioChannel) {

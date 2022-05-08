@@ -148,6 +148,7 @@ public class ServerBootstrap extends AbstractBootstrap<ServerBootstrap, ServerCh
                     pipeline.addLast(handler);
                 }
 
+                // 加入pipeline之后，回调 initChannel 方法，执行 NioServerSocketChannel 对应 EventLoop 的 execute 方法
                 ch.eventLoop().execute(new Runnable() {
                     @Override
                     public void run() {
@@ -212,7 +213,7 @@ public class ServerBootstrap extends AbstractBootstrap<ServerBootstrap, ServerCh
             setAttributes(child, childAttrs);
 
             try {
-                childGroup.register(child).addListener(new ChannelFutureListener() {
+                childGroup.register(child).addListener(new ChannelFutureListener() {    // 将SocketChannel注册到workerGroup中
                     @Override
                     public void operationComplete(ChannelFuture future) throws Exception {
                         if (!future.isSuccess()) {

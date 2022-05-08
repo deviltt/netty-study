@@ -360,7 +360,7 @@ abstract class AbstractChannelHandlerContext implements ChannelHandlerContext, R
 
     static void invokeChannelRead(final AbstractChannelHandlerContext next, Object msg) {
         final Object m = next.pipeline.touch(ObjectUtil.checkNotNull(msg, "msg"), next);
-        EventExecutor executor = next.executor();
+        EventExecutor executor = next.executor();   // HandlerContext所述 EventLoop
         if (executor.inEventLoop()) {
             next.invokeChannelRead(m);
         } else {
@@ -877,7 +877,7 @@ abstract class AbstractChannelHandlerContext implements ChannelHandlerContext, R
         AbstractChannelHandlerContext ctx = this;
         EventExecutor currentExecutor = executor();
         do {
-            ctx = ctx.next;
+            ctx = ctx.next; // 调用下一个节点
         } while (skipContext(ctx, currentExecutor, mask, MASK_ONLY_INBOUND));
         return ctx;
     }
